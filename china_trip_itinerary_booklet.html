@@ -1,0 +1,328 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#1a1a1a;--ink2:#4a4a4a;--ink3:#888;
+    --bg:#faf8f4;--card:#ffffff;--accent:#c0392b;--accent2:#e8a87c;
+    --border:#e0dbd4;--stamp:#2980b9;
+  }
+  body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--ink)}
+  .booklet{max-width:680px;margin:0 auto;padding:0 0 3rem}
+
+  .cover{
+    background:var(--accent);
+    padding:3rem 2.5rem 2.5rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .cover::before{
+    content:'';position:absolute;top:-60px;right:-60px;
+    width:220px;height:220px;
+    border-radius:50%;
+    border:40px solid rgba(255,255,255,0.08);
+  }
+  .cover::after{
+    content:'';position:absolute;bottom:-40px;left:30px;
+    width:140px;height:140px;
+    border-radius:50%;
+    border:25px solid rgba(255,255,255,0.06);
+  }
+  .cover-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1rem;font-weight:500}
+  .cover-title{font-family:'Playfair Display',serif;font-size:42px;color:#fff;line-height:1.15;margin-bottom:.5rem}
+  .cover-title em{font-style:italic;color:rgba(255,255,255,0.8)}
+  .cover-dates{font-size:13px;color:rgba(255,255,255,0.7);margin-top:1.2rem;font-weight:300;letter-spacing:1px}
+  .cover-cities{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+  .city-pill{background:rgba(255,255,255,0.15);color:#fff;font-size:12px;padding:4px 12px;border-radius:20px;font-weight:500}
+
+  .summary-bar{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    background:#fff;border-bottom:1px solid var(--border);
+  }
+  .sum-item{padding:1rem;text-align:center;border-right:1px solid var(--border)}
+  .sum-item:last-child{border-right:none}
+  .sum-num{font-size:22px;font-weight:600;color:var(--accent);font-family:'Playfair Display',serif}
+  .sum-lbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+
+  .day-section{margin:0;border-bottom:1px solid var(--border)}
+  .day-header{
+    display:flex;align-items:center;gap:1rem;
+    padding:1rem 1.5rem;
+    background:#fff;
+    cursor:pointer;
+    user-select:none;
+  }
+  .day-header:hover{background:var(--bg)}
+  .day-num{
+    min-width:44px;height:44px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;
+    font-size:16px;font-weight:600;
+    flex-shrink:0;
+  }
+  .day-info{flex:1}
+  .day-date{font-size:13px;color:var(--ink3);font-weight:400}
+  .day-city-name{font-size:16px;font-weight:500;color:var(--ink)}
+  .day-tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+  .tag{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+  .tag-food{background:#fff3e0;color:#e65100}
+  .tag-attr{background:#e8f5e9;color:#2e7d32}
+  .tag-trans{background:#e3f2fd;color:#1565c0}
+  .tag-hotel{background:#f3e5f5;color:#6a1b9a}
+  .day-cost{font-size:13px;color:var(--ink3);font-weight:400;white-space:nowrap}
+  .chevron{color:var(--ink3);font-size:14px;transition:transform .2s}
+  .chevron.open{transform:rotate(180deg)}
+
+  .day-body{display:none;padding:0 1.5rem 1rem;background:#fff}
+  .day-body.open{display:block}
+
+  .event-row{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:7px 0;
+    border-bottom:1px dashed var(--border);
+  }
+  .event-row:last-child{border-bottom:none}
+  .evt-time{font-size:12px;color:var(--ink3);min-width:40px;padding-top:2px;font-weight:400}
+  .evt-icon{font-size:16px;min-width:20px;text-align:center;padding-top:1px}
+  .evt-name{font-size:14px;color:var(--ink);flex:1;line-height:1.4}
+  .evt-name a{color:var(--accent);text-decoration:none;font-size:12px;margin-left:6px}
+  .evt-price{font-size:12px;color:var(--ink3);white-space:nowrap;padding-top:2px}
+  .evt-price.paid{color:var(--accent)}
+
+  .total-bar{
+    background:var(--ink);
+    color:#fff;
+    padding:1.5rem;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .total-lbl{font-size:13px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1.5px}
+  .total-amt{font-family:'Playfair Display',serif;font-size:28px;font-weight:600}
+
+  .note{padding:1rem 1.5rem;background:var(--bg);font-size:12px;color:var(--ink3);text-align:center;line-height:1.6}
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden">China trip itinerary: Shanghai, Zhangjiajie, Chengdu, Siguniang, Chongqing — May 22 to June 2, 2026</h2>
+
+<div class="booklet">
+  <div class="cover">
+    <div class="cover-eyebrow">Travel Itinerary</div>
+    <div class="cover-title">China China China<br><em>The Bois Tour</em></div>
+    <div class="cover-cities">
+      <span class="city-pill">Shanghai</span>
+      <span class="city-pill">Zhangjiajie</span>
+      <span class="city-pill">Chengdu</span>
+      <span class="city-pill">Siguniang</span>
+      <span class="city-pill">Chongqing</span>
+    </div>
+    <div class="cover-dates">22 May – 2 June 2026</div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="sum-item"><div class="sum-num">12</div><div class="sum-lbl">Days</div></div>
+    <div class="sum-item"><div class="sum-num">5</div><div class="sum-lbl">Cities</div></div>
+    <div class="sum-item"><div class="sum-num">12</div><div class="sum-lbl">Attractions</div></div>
+    <div class="sum-item"><div class="sum-num">~Rp 16M</div><div class="sum-lbl">Est. Total</div></div>
+  </div>
+
+  <div id="days-container"></div>
+
+  <div class="total-bar">
+    <div class="total-lbl">Total Estimated Cost</div>
+    <div class="total-amt" id="grand-total"></div>
+  </div>
+  <div class="note">All prices per person unless indicated. Prices subject to change. Hotel costs may be shared across multiple travellers.</div>
+</div>
+
+<script>
+const days = [
+  {
+    day:1, date:"Fri, May 22", city:"Shanghai",
+    events:[
+      {time:"07:00", icon:"✈️", name:"Depart from Jakarta", price:2400000, type:"trans"},
+      {time:"17:00", icon:"🏨", name:"Arrive & check in — E-Sport Hotel", price:292784, type:"hotel", link:"https://www.trip.com/hotels/detail/?cityEnName=Shanghai&cityId=2&hotelId=86111056"},
+      {time:"17:00", icon:"🚇", name:"Shanghai metro to hotel", price:20000, type:"trans"},
+      {time:"19:00", icon:"🍜", name:"Dinner at Lao Di Fang Mian Guan", price:100000, type:"food", link:"https://guide.michelin.com/jp/en/shanghai-municipality/shanghai/restaurant/lao-di-fang-mian-guan"},
+      {time:"19:00", icon:"🚇", name:"Shanghai Metro (PP)", price:15000, type:"trans"},
+      {time:"20:00", icon:"🌉", name:"Walk at the Bund", price:0, type:"attr"},
+    ]
+  },
+  {
+    day:2, date:"Sat, May 23", city:"Shanghai",
+    events:[
+      {time:"08:00", icon:"🏘", name:"Wukang Road", price:0, type:"attr"},
+      {time:"12:00", icon:"🥟", name:"Lunch at Jia Jia Tang Bao", price:100000, type:"food"},
+      {time:"13:00", icon:"🛍", name:"Nanjing Road", price:0, type:"attr"},
+      {time:"16:00", icon:"🏛", name:"Xintiandi", price:0, type:"attr"},
+      {time:"18:00", icon:"🥟", name:"Dinner at Lin Long Fang", price:100000, type:"food", link:"https://www.tripadvisor.com/Restaurant_Review-g308272-d7810353-Reviews-Linlongfang_Xiaolongbao_Jianguo_East_Road-Shanghai.html"},
+      {time:"19:00", icon:"🏮", name:"Yu Garden", price:0, type:"attr"},
+      {time:"19:00", icon:"🚗", name:"Didi", price:50000, type:"trans"},
+    ]
+  },
+  {
+    day:3, date:"Sun, May 24", city:"Zhangjiajie",
+    events:[
+      {time:"07:00", icon:"🚄", name:"Train from Shanghai to Zhangjiajie", price:2000000, type:"trans", link:"https://us.trip.com/trains/china/list?departureStationName=Shanghai+&arrivalStationName=Zhangjiajie+"},
+      {time:"15:00", icon:"🏨", name:"Check in — Yunxi Xiaozhu", price:450000, type:"hotel"},
+      {time:"18:00", icon:"🍽", name:"Dinner", price:100000, type:"food"},
+      {time:"18:00", icon:"🗼", name:"72 Wonder Tower", price:200000, type:"attr", link:"https://id.trip.com/travel-guide/attraction/zhangjiajie/72-wonder-tower-135452452"},
+    ]
+  },
+  {
+    day:4, date:"Mon, May 25", city:"Zhangjiajie",
+    events:[
+      {time:"08:00", icon:"🏔", name:"Full day ZJJ National Forest Park", price:1223077, type:"attr", link:"https://id.trip.com/travel-guide/attraction/zhangjiajie/zhangjiajie-national-forest-park-10559092"},
+      {time:"12:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"18:00", icon:"🍽", name:"Dinner", price:100000, type:"food"},
+    ]
+  },
+  {
+    day:5, date:"Tue, May 26", city:"Zhangjiajie",
+    events:[
+      {time:"07:00", icon:"🚗", name:"Didi", price:80000, type:"trans"},
+      {time:"08:00", icon:"⛰", name:"Tianmen Mountain", price:738462, type:"attr", link:"https://id.trip.com/travel-guide/attraction/zhangjiajie/tianmen-mountain-national-forest-park-10558650"},
+      {time:"13:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"16:00", icon:"🚗", name:"Didi", price:20000, type:"trans"},
+      {time:"19:00", icon:"🍽", name:"Dinner", price:100000, type:"food"},
+      {time:"21:00", icon:"🚗", name:"Didi", price:50000, type:"trans"},
+    ]
+  },
+  {
+    day:6, date:"Wed, May 27", city:"Chengdu",
+    events:[
+      {time:"05:00", icon:"🚗", name:"Didi to station", price:35000, type:"trans"},
+      {time:"07:00", icon:"🚄", name:"Flight from ZJJ to Chengdu", price:895300, type:"trans"},
+      {time:"10:00", icon:"🏨", name:"Check in — Chunfeng Apartment", price:112105, type:"hotel"},
+      {time:"16:00", icon:"🛁", name:"Fu Fu Tang — 18hr Spa AYCE", price:700000, type:"hotel", link:"https://pandastroll.com/st_tour/fufu-bathhouse-chengdus-all-inclusive-spa-dining-retreat/"},
+    ]
+  },
+  {
+    day:7, date:"Thu, May 28", city:"Siguniang",
+    events:[
+      {time:"07:00", icon:"🚌", name:"Bus to Siguniang", price:239000, type:"trans"},
+      {time:"11:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"12:00", icon:"🏞", name:"Shuangqiao Valley", price:360000, type:"attr", link:"https://id.trip.com/travel-guide/attraction/xiaojin/shuangqiao-valley-98208"},
+      {time:"17:00", icon:"🏨", name:"Check in — Cloud Inn", price:775000, type:"hotel"},
+      {time:"18:00", icon:"🍽", name:"Dinner", price:100000, type:"food"},
+    ]
+  },
+  {
+    day:8, date:"Fri, May 29", city:"Siguniang",
+    events:[
+      {time:"08:00", icon:"🥾", name:"Hiking — Changping Valley", price:220000, type:"attr", link:"https://id.trip.com/travel-guide/attraction/xiaojin/changping-valley-98117/"},
+      {time:"12:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"18:00", icon:"🍽", name:"Dinner", price:100000, type:"food"},
+    ]
+  },
+  {
+    day:9, date:"Sat, May 30", city:"Siguniang → Chengdu",
+    events:[
+      {time:"12:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"16:00", icon:"🚌", name:"Bus from Siguniang to Chengdu", price:239000, type:"trans"},
+      {time:"21:00", icon:"🍽", name:"Dinner in Chengdu", price:100000, type:"food"},
+      {time:"22:00", icon:"🏨", name:"Check in hotel Chengdu", price:333672, type:"hotel"},
+    ]
+  },
+  {
+    day:10, date:"Sun, May 31", city:"Chengdu",
+    events:[
+      {time:"08:00", icon:"🐼", name:"Panda Valley", price:328206, type:"attr"},
+      {time:"13:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"18:00", icon:"🍽", name:"Dinner", price:100000, type:"food"},
+      {time:"18:00", icon:"💙", name:"Dujiangyan Blue Tears", price:205000, type:"attr"},
+      {time:"19:00", icon:"🚗", name:"Didi", price:12000, type:"trans"},
+    ]
+  },
+  {
+    day:11, date:"Mon, June 1", city:"Chongqing",
+    events:[
+      {time:"11:00", icon:"🚗", name:"Didi", price:20000, type:"trans"},
+      {time:"12:00", icon:"🚄", name:"Train to Chongqing", price:250000, type:"trans"},
+      {time:"13:00", icon:"🍽", name:"Lunch", price:100000, type:"food"},
+      {time:"13:00", icon:"🚗", name:"Didi", price:20000, type:"trans"},
+      {time:"14:00", icon:"🏨", name:"Check in — Twilight Seek", price:407500, type:"hotel", link:"https://id.trip.com/hotels/Chongqing-hotel-detail-63256366/"},
+      {time:"16:00", icon:"🚉", name:"Liziba St. + Chaotianmen", price:0, type:"attr"},
+      {time:"18:00", icon:"🏮", name:"Hongyadong", price:0, type:"attr", link:"https://www.trip.com/travel-guide/attraction/chongqing/hongya-cave-10558957"},
+      {time:"19:00", icon:"🌶", name:"Dinner", price:100000, type:"food"},
+    ]
+  },
+  {
+    day:12, date:"Tue, June 2", city:"Chongqing → Jakarta",
+    events:[
+      {time:"08:00", icon:"🍽", name:"Breakfast", price:100000, type:"food"},
+      {time:"13:50", icon:"✈️", name:"Fly home to Jakarta", price:2400000, type:"trans"},
+    ]
+  },
+];
+
+function fmt(n){
+  if(n===0) return '<span style="color:var(--ink3)">Free</span>';
+  return '<span class="paid">Rp '+n.toLocaleString('id-ID')+'</span>';
+}
+
+function typeTag(type){
+  const map={food:'tag-food',attr:'tag-attr',trans:'tag-trans',hotel:'tag-hotel'};
+  const lbl={food:'Food',attr:'Attraction',trans:'Transport',hotel:'Hotel'};
+  return `<span class="tag ${map[type]||'tag-attr'}">${lbl[type]||type}</span>`;
+}
+
+function typeSummary(events){
+  const types=[...new Set(events.map(e=>e.type))];
+  return types.map(t=>typeTag(t)).join('');
+}
+
+let grandTotal=0;
+const container=document.getElementById('days-container');
+
+days.forEach((d,i)=>{
+  const dayTotal=d.events.reduce((s,e)=>s+e.price,0);
+  grandTotal+=dayTotal;
+
+  const sec=document.createElement('div');
+  sec.className='day-section';
+
+  const header=document.createElement('div');
+  header.className='day-header';
+  header.innerHTML=`
+    <div class="day-num">${d.day}</div>
+    <div class="day-info">
+      <div class="day-date">${d.date}</div>
+      <div class="day-city-name">${d.city}</div>
+      <div class="day-tags">${typeSummary(d.events)}</div>
+    </div>
+    <div class="day-cost">Rp ${dayTotal.toLocaleString('id-ID')}</div>
+    <span class="chevron" id="chev-${i}">▼</span>
+  `;
+
+  const body=document.createElement('div');
+  body.className='day-body';
+  body.id='body-'+i;
+
+  d.events.forEach(ev=>{
+    const row=document.createElement('div');
+    row.className='event-row';
+    const linkHtml=ev.link?`<a href="${ev.link}" target="_blank">↗ link</a>`:'';
+    row.innerHTML=`
+      <div class="evt-time">${ev.time}</div>
+      <div class="evt-icon">${ev.icon}</div>
+      <div class="evt-name">${ev.name}${linkHtml}</div>
+      <div class="evt-price">${fmt(ev.price)}</div>
+    `;
+    body.appendChild(row);
+  });
+
+  header.addEventListener('click',()=>{
+    const isOpen=body.classList.contains('open');
+    body.classList.toggle('open',!isOpen);
+    document.getElementById('chev-'+i).classList.toggle('open',!isOpen);
+  });
+
+  sec.appendChild(header);
+  sec.appendChild(body);
+  container.appendChild(sec);
+});
+
+document.getElementById('grand-total').textContent='Rp '+grandTotal.toLocaleString('id-ID');
+</script>
